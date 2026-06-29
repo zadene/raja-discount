@@ -14,7 +14,7 @@
         
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 text-center text-white relative">
             <div class="absolute top-3 right-3">
-                <span id="statusKoneksi" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-400 text-amber-900 font-mono scale-90">
+                <span id="statusKoneksi" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500 text-white font-mono scale-90 animate-pulse">
                     🔄 Checking...
                 </span>
             </div>
@@ -25,7 +25,6 @@
         </div>
 
         <div id="viewAuth" class="p-5 space-y-5">
-            
             <div id="formLogin" class="space-y-3">
                 <div class="text-center mb-2">
                     <h2 class="font-bold text-slate-700 text-base">🔓 Masuk ke Sistem</h2>
@@ -60,7 +59,7 @@
                 
                 <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1.5">
                     <label class="text-[11px] font-bold text-amber-800 uppercase block tracking-wider">🔒 Buat PIN Transaksi (6 Angka)</label>
-                    <input type="password" id="regPin" maxlength="6" pattern="[0-8]*" inputmode="numeric" placeholder="Masukkan 6 Digit Angka PIN" class="w-full p-2 text-center text-sm font-bold tracking-widest border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <input type="password" id="regPin" maxlength="6" pattern="[0-9]*" inputmode="numeric" placeholder="Masukkan 6 Digit Angka PIN" class="w-full p-2 text-center text-sm font-bold tracking-widest border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
                     <span class="text-[10px] text-amber-600 block leading-tight">PIN ini wajib dimasukkan setiap kali Anda ingin menukarkan hadiah di toko demi keamanan poin Anda.</span>
                 </div>
 
@@ -70,7 +69,6 @@
                     <a href="javascript:void(0)" onclick="tampilkanForm('login')" class="text-xs text-slate-500 hover:text-slate-800 underline">← Kembali ke Halaman Login</a>
                 </div>
             </div>
-
         </div>
 
         <div id="viewPelanggan" class="p-5 space-y-4 hidden">
@@ -86,8 +84,7 @@
 
             <div>
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🎁 Tukar Poin Hadiah</h3>
-                <div id="listHadiahPelanggan" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                </div>
+                <div id="listHadiahPelanggan" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
             </div>
 
             <button onclick="logout()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 p-2 rounded-xl text-xs font-medium transition-all">Keluar Akun</button>
@@ -131,16 +128,14 @@
                                     <th class="p-2 text-right">Poin</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablePelangganBody">
-                            </tbody>
+                            <tbody id="tablePelangganBody"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <div>
                     <span class="text-xs font-bold text-slate-500 block mb-1">👔 Daftar Karyawan</span>
-                    <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-slate-50 text-xs space-y-1" id="listKaryawan">
-                    </div>
+                    <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-slate-50 text-xs space-y-1" id="listKaryawan"></div>
                 </div>
 
                 <div>
@@ -152,16 +147,33 @@
             </div>
 
             <div id="panelAdminSetting" class="space-y-4 hidden">
-                <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
-                    <span class="text-xs font-bold text-slate-600 block">🛠️ Ubah Kelipatan Poin Belanja</span>
-                    <div class="flex gap-2">
-                        <input type="number" id="cfgBelanja" placeholder="Misal: 50000" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <button onclick="simpanConfigPoin()" class="bg-slate-800 text-white text-xs px-3 py-2 rounded-xl font-bold">Update</button>
+                <div class="border p-3 rounded-xl bg-slate-50 space-y-3">
+                    <span class="text-xs font-bold text-slate-600 block">⚙️ Konfigurasi Utama Sistem</span>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Kelipatan Belanja (Rp)</label>
+                            <input type="number" id="cfgBelanja" placeholder="Misal: 50000" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">No. WA Admin Notifikasi</label>
+                            <input type="text" id="cfgWaAdmin" placeholder="Contoh: 6285228449276" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628123xxx</b></span>
+                        </div>
+                        <button onclick="simpanConfigPoin()" class="w-full bg-slate-800 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-slate-900">Simpan Perubahan Sistem</button>
                     </div>
                 </div>
 
                 <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
-                    <span class="text-xs font-bold text-slate-600 block">➕ Tambah Barang Hadiah Baru</span>
+                    <div class="flex justify-between items-center mb-1 flex-wrap gap-1">
+                        <span class="text-xs font-bold text-slate-600 block">➕ Tambah Barang Hadiah</span>
+                        <div class="flex gap-1.5">
+                            <button onclick="unduhTemplateHadiahExcel()" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-0.5 rounded font-bold transition-all flex items-center gap-0.5">📄 Template</button>
+                            <label class="cursor-pointer text-[10px] bg-green-600 hover:bg-green-700 text-white px-2 py-0.5 rounded font-bold shadow-sm transition-all">
+                                📥 Import Excel
+                                <input type="file" id="importHadiahExcel" accept=".xlsx, .xls" class="hidden" onchange="prosesImportHadiahExcel(event)">
+                            </label>
+                        </div>
+                    </div>
                     <input type="text" id="addNamaBarang" placeholder="Nama Barang (Contoh: Minyak Goreng 1L)" class="w-full p-2 text-xs border rounded-xl">
                     <input type="number" id="addPoinButuh" placeholder="Jumlah Poin Yang Dibutuhkan" class="w-full p-2 text-xs border rounded-xl">
                     <input type="number" id="addStokBarang" placeholder="Total Quantity / Jumlah Stok Barang" class="w-full p-2 text-xs border rounded-xl">
@@ -170,8 +182,7 @@
 
                 <div>
                     <span class="text-xs font-bold text-slate-500 block mb-1">🗑️ List Barang Hadiah Aktif</span>
-                    <div id="listHadiahAdmin" class="space-y-1 max-h-32 overflow-y-auto">
-                    </div>
+                    <div id="listHadiahAdmin" class="space-y-1 max-h-32 overflow-y-auto"></div>
                 </div>
             </div>
 
@@ -188,9 +199,9 @@
         let currentRole = 'pelanggan';
         let currentUserData = null; 
         let nilaiKonversiGlobal = 50000; 
+        let noWaAdminGlobal = "6285228449276"; 
         let cachePelanggan = []; 
 
-        // 1. Inisialisasi Database & Cek Parameter URL
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -200,9 +211,7 @@
                 loadNilaiKonversiSistem();
 
                 const params = new URLSearchParams(window.location.search);
-                if(params.get('page') === 'register') {
-                    tampilkanForm('register');
-                }
+                if(params.get('page') === 'register') { tampilkanForm('register'); }
             } else { throw new Error(); }
         } catch (e) {
             const badgeStatus = document.getElementById('statusKoneksi');
@@ -239,16 +248,17 @@
 
         async function loadNilaiKonversiSistem() {
             try {
-                let { data, error } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja').eq('id', 1).maybeSingle();
+                let { data, error } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja, wa_admin').eq('id', 1).maybeSingle();
                 if (data) {
                     nilaiKonversiGlobal = data.konversi_belanja;
+                    noWaAdminGlobal = data.wa_admin || "6285228449276";
                     document.getElementById('txtKonversiSistem').innerText = "Rp " + nilaiKonversiGlobal.toLocaleString('id-ID');
                     document.getElementById('cfgBelanja').value = nilaiKonversiGlobal;
+                    document.getElementById('cfgWaAdmin').value = noWaAdminGlobal;
                 }
             } catch(e) { console.log("Gagal memuat aturan konversi."); }
         }
 
-        // UPDATE: Menyimpan PIN saat registrasi pelanggan baru
         async function prosesRegistrasi() {
             const nama = document.getElementById('regNama').value.trim();
             const hp = document.getElementById('regHP').value.trim();
@@ -315,7 +325,6 @@
         async function renderHadiahPelanggan() {
             const container = document.getElementById('listHadiahPelanggan');
             container.innerHTML = "⏳ Memuat hadiah...";
-            
             try {
                 let { data: listHadiah } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
                 if(listHadiah && listHadiah.length > 0) {
@@ -340,35 +349,26 @@
             } catch(e) { container.innerHTML = "Gagal memuat hadiah."; }
         }
 
-        // UPDATE: Logika Verifikasi PIN Real-Time saat Pelanggan Tukar Poin
         async function tukarPoinSistem(barangId, poinButuh, namaBarang) {
             if(currentUserData.poin < poinButuh) {
                 alert("Maaf, jumlah poin Anda saat ini tidak mencukupi untuk ditukar dengan " + namaBarang);
                 return;
             }
 
-            // Meminta PIN Keamanan Pelanggan
             const inputPin = prompt("🔒 KODE KEAMANAN\nSilakan masukkan 6 digit PIN Anda untuk konfirmasi penukaran " + namaBarang + ":");
+            if (inputPin === null) return;
             
-            if (inputPin === null) return; // Jika membatalkan prompt
-            
-            // Ambil data PIN terbaru di server database untuk dicocokkan
             try {
                 let { data: cekUser, error: errUser } = await supabaseClient.from('pelanggan').select('pin, poin').eq('id', currentUserData.id).maybeSingle();
-                if(errUser || !cekUser) {
-                    alert("Gagal memverifikasi keamanan akun Anda. Silakan coba lagi.");
-                    return;
-                }
+                if(errUser || !cekUser) { alert("Gagal memverifikasi keamanan akun Anda."); return; }
 
-                // Proteksi kecocokan PIN
                 if (inputPin !== cekUser.pin) {
-                    alert("❌ PIN SALAH!\nKode PIN transaksi yang Anda masukkan tidak sesuai. Penukaran dibatalkan.");
+                    alert("❌ PIN SALAH!\nKode PIN transaksi tidak sesuai. Penukaran dibatalkan.");
                     return;
                 }
 
-                // Lanjut cek stok barang terbaru langsung dari server
                 let { data: cekBarang, error: errCek } = await supabaseClient.from('barang_tukar').select('stok').eq('id', barangId).maybeSingle();
-                if(errCek || !cekBarang) { alert("Gagal melakukan pengecekan data barang."); return; }
+                if(errCek || !cekBarang) { alert("Gagal mengecek data barang."); return; }
 
                 if(cekBarang.stok < 1) {
                     alert("⚠️ PENUKARAN GAGAL!\nMaaf, Stok barang '" + namaBarang + "' sudah habis!");
@@ -388,9 +388,18 @@
                 if(err1 || err2 || err3) { 
                     alert("Gagal transaksi: " + (err1?.message || err2?.message || err3?.message)); 
                 } else {
-                    alert("🎉 BERHASIL!\nPIN Valid. Penukaran '" + namaBarang + "' sukses.\nSisa stok: " + stokBaru);
+                    // Update data lokal terlebih dahulu
                     currentUserData.poin = poinBaru;
-                    bukaDashboardPelanggan(); 
+
+                    // Format Pesan Teks WA Otomatis
+                    const textNotifWA = `*NOTIFIKASI KLAIM HADIAH - RAJA DISCOUNT*\n\nHalo Admin Toko, saya telah sukses melakukan penukaran poin lewat sistem web:\n\n👤 *Nama Member:* ${currentUserData.nama}\n📱 *No. Handphone:* ${currentUserData.no_hp}\n🎁 *Barang Hadiah:* ${namaBarang}\n✨ *Poin Dipotong:* ${poinButuh} Poin\n📦 *Sisa Stok Toko:* ${stokBaru} Pcs\n\nMohon hadiah ini segera disiapkan ya Admin. Terima kasih banyak! 🙏`;
+                    
+                    // Menggunakan wa.me dan direct location agar tembus blokir pop-up browser HP
+                    const urlWhatsAppRedirect = `https://wa.me/${noWaAdminGlobal}?text=${encodeURIComponent(textNotifWA)}`;
+                    
+                    alert("🎉 BERHASIL!\nPIN Valid. Penukaran '" + namaBarang + "' sukses.\n\nHalaman akan langsung beralih ke WhatsApp untuk mengirim nota klaim ke toko.");
+                    
+                    window.location.href = urlWhatsAppRedirect;
                 }
             } catch(err) { alert("Crash Penukaran Poin: " + err.message); }
         }
@@ -445,7 +454,7 @@
                 }
 
                 const totalPoinBaru = pelanggan.poin + tambahanPoin;
-                const { error: updErr } = await supabaseClient.from('pelanggan').update({ poin: totalPoinBaru }).eq('id', pelanggan.id);
+                const { error: updErr = null } = await supabaseClient.from('pelanggan').update({ poin: totalPoinBaru }).eq('id', pelanggan.id);
                 if(updErr) { alert("Gagal update: " + updErr.message); }
                 else {
                     alert("✅ POIN BERHASIL DITAMBAHKAN!\nPelanggan: " + pelanggan.nama + "\nTambahan: +" + tambahanPoin + " Poin");
@@ -458,7 +467,6 @@
             const tableBody = document.getElementById('tablePelangganBody');
             const boxKaryawan = document.getElementById('listKaryawan');
             const boxRiwayat = document.getElementById('listRiwayatPenukaran');
-            
             tableBody.innerHTML = "<tr><td colspan='2' class='p-2 text-center text-slate-400'>Loading...</td></tr>";
             
             try {
@@ -520,12 +528,26 @@
 
         async function simpanConfigPoin() {
             const nominalBaru = parseInt(document.getElementById('cfgBelanja').value);
-            if(isNaN(nominalBaru) || nominalBaru <= 0) { alert("Masukkan nominal yang valid!"); return; }
+            const waBaru = document.getElementById('cfgWaAdmin').value.trim();
+            
+            if(isNaN(nominalBaru) || nominalBaru <= 0 || !waBaru) { 
+                alert("Mohon masukkan nominal belanja dan nomor WA admin yang valid!"); 
+                return; 
+            }
 
             try {
-                const { error } = await supabaseClient.from('pengaturan_poin').update({ konversi_belanja: nominalBaru }).eq('id', 1);
-                if(!error) { alert("Aturan diperbarui!"); loadNilaiKonversiSistem(); }
-            } catch(e) { alert("Error sistem ubah aturan."); }
+                const { error } = await supabaseClient.from('pengaturan_poin').update({ 
+                    konversi_belanja: nominalBaru,
+                    wa_admin: waBaru 
+                }).eq('id', 1);
+                
+                if(!error) { 
+                    alert("🎉 PENGATURAN BERHASIL DISIMPAN!\nAturan poin & Nomor WA Notifikasi berhasil diperbarui."); 
+                    loadNilaiKonversiSistem(); 
+                } else {
+                    alert("Gagal memperbarui database: " + error.message);
+                }
+            } catch(e) { alert("Error database sistem ubah aturan."); }
         }
 
         async function tambahBarangHadiah() {
@@ -546,6 +568,67 @@
                     renderHadiahAdminView();
                 }
             } catch(e) { alert("Error database tambah hadiah."); }
+        }
+
+        async function prosesImportHadiahExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonData.length === 0) { alert("File Excel kosong atau format kolom salah!"); return; }
+
+                    const barisDataBaru = [];
+                    for (let row of jsonData) {
+                        const nama = row['Nama Barang'] || row['nama_barang'] || row['Nama'];
+                        const poin = parseInt(row['Poin Butuh'] || row['poin_butuh'] || row['Poin'] || row['Poin Minimal']);
+                        const stok = parseInt(row['Stok'] || row['stok'] || row['Jumlah'] || row['Quantity']);
+
+                        if (nama && !isNaN(poin) && !isNaN(stok)) {
+                            barisDataBaru.push({ nama_barang: nama, poin_butuh: poin, stok: stok });
+                        }
+                    }
+
+                    if (barisDataBaru.length === 0) {
+                        alert("Gagal memproses. Pastikan nama kolom di file Excel Anda adalah: 'Nama Barang', 'Poin Butuh', dan 'Stok'.");
+                        return;
+                    }
+
+                    if (!confirm("Konfirmasi Import:\nApakah Anda yakin ingin memasukkan " + barisDataBaru.length + " data barang hadiah ini sekaligus ke database?")) return;
+
+                    const { error } = await supabaseClient.from('barang_tukar').insert(barisDataBaru);
+                    if (error) {
+                        alert("Gagal memasukkan ke server: " + error.message);
+                    } else {
+                        alert("🎉 SUKSES MASSAL!\nBerhasil menambahkan " + barisDataBaru.length + " barang hadiah baru ke dalam sistem.");
+                        renderHadiahAdminView();
+                    }
+                } catch (err) { alert("Gagal membaca dokumen Excel: " + err.message); }
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = ''; 
+        }
+
+        function unduhTemplateHadiahExcel() {
+            try {
+                var wb = XLSX.utils.book_new();
+                var isiTemplate = [
+                    ['Nama Barang', 'Poin Butuh', 'Stok'], 
+                    ['Minyak Goreng 1L', 15, 50],         
+                    ['Gula Pasir 1Kg', 10, 100],          
+                    ['Sirup Marjan', 12, 35]               
+                ];
+                var ws = XLSX.utils.aoa_to_sheet(isiTemplate);
+                XLSX.utils.book_append_sheet(wb, ws, "Template_Hadiah");
+                XLSX.writeFile(wb, "Template_Import_Hadiah_RajaDiscount.xlsx");
+            } catch(err) { alert("Gagal membuat template Excel: " + err.message); }
         }
 
         async function renderHadiahAdminView() {
