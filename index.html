@@ -161,7 +161,7 @@
                     <span class="text-xs font-bold text-slate-600 block">📞 No. WA Admin Notifikasi</span>
                     <div>
                         <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Nomor WhatsApp Admin</label>
-                        <input type="text" id="cfgWaAdmin" placeholder="Contoh: 628123456789" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="cfgWaAdmin" placeholder="Contoh: 628818670985" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628123xxx</b></span>
                     </div>
                     <button onclick="simpanWaAdmin()" class="w-full bg-indigo-600 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-indigo-700">Simpan Nomor WA Admin</button>
@@ -203,7 +203,7 @@
         let currentRole = 'pelanggan';
         let currentUserData = null; 
         let nilaiKonversiGlobal = 50000; 
-        let noWaAdminGlobal = "628123456789"; 
+        let noWaAdminGlobal = "628818670985"; 
         let cachePelanggan = []; 
 
         try {
@@ -261,7 +261,7 @@
                 
                 let { data: dataWa } = await supabaseClient.from('pengaturan_wa').select('wa_admin').eq('id', 1).maybeSingle();
                 if (dataWa) {
-                    noWaAdminGlobal = dataWa.wa_admin || "628123456789";
+                    noWaAdminGlobal = dataWa.wa_admin || "628818670985";
                     document.getElementById('cfgWaAdmin').value = noWaAdminGlobal;
                 }
             } catch(e) { console.log("Gagal memuat konfigurasi sistem."); }
