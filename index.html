@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Raja Discount - Sistem Poin</title>
+    <title>Toko Raja Discount - Sistem Poin & Stok</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -25,27 +25,52 @@
         </div>
 
         <div id="viewAuth" class="p-5 space-y-5">
-            <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-medium">
-                <button onclick="switchMenu('register')" id="tabRegister" class="flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all">📝 Daftar Baru</button>
-                <button onclick="switchMenu('login')" id="tabLogin" class="flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all">🔓 Masuk</button>
-            </div>
-
-            <div id="formRegister" class="space-y-3">
-                <input type="text" id="regNama" placeholder="Nama Lengkap Pelanggan" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="tel" id="regHP" placeholder="Nomor HP Pelanggan" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="text" id="regAlamat" placeholder="Alamat Rumah" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button onclick="prosesRegistrasi()" id="btnReg" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Daftarkan Pelanggan</button>
-            </div>
-
-            <div id="formLogin" class="space-y-3 hidden">
-                <div class="flex border-b border-slate-100 text-xs font-bold mb-1">
-                    <button onclick="setRole('pelanggan')" id="subTabP" class="flex-1 py-2 text-center border-b-2 border-blue-600 text-blue-600">👤 Pelanggan</button>
-                    <button onclick="setRole('admin')" id="subTabA" class="flex-1 py-2 text-center text-slate-400 border-transparent">🔑 Admin Toko</button>
+            
+            <div id="formLogin" class="space-y-3">
+                <div class="text-center mb-2">
+                    <h2 class="font-bold text-slate-700 text-base">🔓 Masuk ke Sistem</h2>
+                    <p class="text-[11px] text-slate-400">Silakan pilih peran dan masukkan akun Anda</p>
                 </div>
-                <input type="text" id="loginId" placeholder="Masukkan No HP Anda" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="password" id="loginPass" placeholder="Password Admin" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
-                <button onclick="prosesLogin()" id="btnMasuk" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Masuk Ke Sistem</button>
+
+                <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-bold mb-2">
+                    <button onclick="setRole('pelanggan')" id="subTabP" class="flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all">👤 Pelanggan</button>
+                    <button onclick="setRole('admin')" id="subTabA" class="flex-1 py-2 text-center rounded-lg text-slate-400 border-transparent transition-all">🔑 Admin Toko</button>
+                </div>
+
+                <input type="text" id="loginId" placeholder="Masukkan No HP Anda" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="loginPass" placeholder="Password Admin" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
+                <button onclick="prosesLogin()" id="btnMasuk" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Masuk</button>
+                
+                <div class="text-center pt-2">
+                    <p class="text-xs text-slate-400">Belum terdaftar sebagai member? <br>
+                        <a href="javascript:void(0)" onclick="tampilkanForm('register')" class="text-blue-600 font-bold hover:underline">Daftar Akun Baru Baru di Sini</a>
+                    </p>
+                </div>
             </div>
+
+            <div id="formRegister" class="space-y-3 hidden">
+                <div class="text-center mb-2">
+                    <h2 class="font-bold text-slate-700 text-base">📝 Form Pendaftaran Member</h2>
+                    <p class="text-[11px] text-slate-400">Isi data diri Anda dengan benar untuk mulai mengumpulkan poin</p>
+                </div>
+
+                <input type="text" id="regNama" placeholder="Nama Lengkap Pelanggan" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" id="regHP" placeholder="Nomor HP Pelanggan" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="regAlamat" placeholder="Alamat Rumah" class="w-full p-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1.5">
+                    <label class="text-[11px] font-bold text-amber-800 uppercase block tracking-wider">🔒 Buat PIN Transaksi (6 Angka)</label>
+                    <input type="password" id="regPin" maxlength="6" pattern="[0-8]*" inputmode="numeric" placeholder="Masukkan 6 Digit Angka PIN" class="w-full p-2 text-center text-sm font-bold tracking-widest border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <span class="text-[10px] text-amber-600 block leading-tight">PIN ini wajib dimasukkan setiap kali Anda ingin menukarkan hadiah di toko demi keamanan poin Anda.</span>
+                </div>
+
+                <button onclick="prosesRegistrasi()" id="btnReg" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Daftarkan Sekarang</button>
+                
+                <div class="text-center pt-2">
+                    <a href="javascript:void(0)" onclick="tampilkanForm('login')" class="text-xs text-slate-500 hover:text-slate-800 underline">← Kembali ke Halaman Login</a>
+                </div>
+            </div>
+
         </div>
 
         <div id="viewPelanggan" class="p-5 space-y-4 hidden">
@@ -139,6 +164,7 @@
                     <span class="text-xs font-bold text-slate-600 block">➕ Tambah Barang Hadiah Baru</span>
                     <input type="text" id="addNamaBarang" placeholder="Nama Barang (Contoh: Minyak Goreng 1L)" class="w-full p-2 text-xs border rounded-xl">
                     <input type="number" id="addPoinButuh" placeholder="Jumlah Poin Yang Dibutuhkan" class="w-full p-2 text-xs border rounded-xl">
+                    <input type="number" id="addStokBarang" placeholder="Total Quantity / Jumlah Stok Barang" class="w-full p-2 text-xs border rounded-xl">
                     <button onclick="tambahBarangHadiah()" class="w-full bg-blue-600 text-white text-xs p-2 rounded-xl font-bold">Simpan Barang</button>
                 </div>
 
@@ -164,7 +190,7 @@
         let nilaiKonversiGlobal = 50000; 
         let cachePelanggan = []; 
 
-        // 1. Inisialisasi Database
+        // 1. Inisialisasi Database & Cek Parameter URL
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -172,6 +198,11 @@
                 badgeStatus.className = "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500 text-white font-mono scale-90 animate-pulse";
                 badgeStatus.innerText = "● Online";
                 loadNilaiKonversiSistem();
+
+                const params = new URLSearchParams(window.location.search);
+                if(params.get('page') === 'register') {
+                    tampilkanForm('register');
+                }
             } else { throw new Error(); }
         } catch (e) {
             const badgeStatus = document.getElementById('statusKoneksi');
@@ -179,38 +210,33 @@
             badgeStatus.innerText = "● Offline";
         }
 
-        // Navigasi Tampilan Login/Register
-        function switchMenu(menu) {
-            if(menu === 'register') {
-                document.getElementById('tabRegister').className = "flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all";
-                document.getElementById('tabLogin').className = "flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+        function tampilkanForm(target) {
+            if(target === 'register') {
                 document.getElementById('formRegister').classList.remove('hidden');
                 document.getElementById('formLogin').classList.add('hidden');
             } else {
-                document.getElementById('tabLogin').className = "flex-1 py-2 text-center rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
-                document.getElementById('tabRegister').className = "flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all";
                 document.getElementById('formLogin').classList.remove('hidden');
                 document.getElementById('formRegister').classList.add('hidden');
             }
         }
 
-        // Ganti Hak Akses Form Login
         function setRole(role) {
             currentRole = role;
             if(role === 'pelanggan') {
-                document.getElementById('subTabP').className = "flex-1 py-2 text-center border-b-2 border-blue-600 text-blue-600";
-                document.getElementById('subTabA').className = "flex-1 py-2 text-center text-slate-400 border-transparent";
+                document.getElementById('subTabP').className = "flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all";
+                document.getElementById('subTabA').className = "flex-1 py-2 text-center rounded-lg text-slate-400 border-transparent transition-all";
                 document.getElementById('loginId').placeholder = "Masukkan No HP Anda";
                 document.getElementById('loginPass').classList.add('hidden');
+                document.getElementById('btnMasuk').className = "w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all";
             } else {
-                document.getElementById('subTabA').className = "flex-1 py-2 text-center border-b-2 border-indigo-600 text-indigo-600";
-                document.getElementById('subTabP').className = "flex-1 py-2 text-center text-slate-400 border-transparent";
+                document.getElementById('subTabA').className = "flex-1 py-2 text-center rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                document.getElementById('subTabP').className = "flex-1 py-2 text-center rounded-lg text-slate-400 border-transparent transition-all";
                 document.getElementById('loginId').placeholder = "Username Admin";
                 document.getElementById('loginPass').classList.remove('hidden');
+                document.getElementById('btnMasuk').className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all";
             }
         }
 
-        // Ambil Data Pengaturan Konversi Poin
         async function loadNilaiKonversiSistem() {
             try {
                 let { data, error } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja').eq('id', 1).maybeSingle();
@@ -219,33 +245,35 @@
                     document.getElementById('txtKonversiSistem').innerText = "Rp " + nilaiKonversiGlobal.toLocaleString('id-ID');
                     document.getElementById('cfgBelanja').value = nilaiKonversiGlobal;
                 }
-            } catch(e) { console.log("Gagal memuat aturan konversi database."); }
+            } catch(e) { console.log("Gagal memuat aturan konversi."); }
         }
 
-        // Pendaftaran Pelanggan Baru
+        // UPDATE: Menyimpan PIN saat registrasi pelanggan baru
         async function prosesRegistrasi() {
             const nama = document.getElementById('regNama').value.trim();
             const hp = document.getElementById('regHP').value.trim();
             const alamat = document.getElementById('regAlamat').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
 
             if(!nama || !hp) { alert("Nama dan No HP wajib diisi!"); return; }
+            if(pin.length !== 6 || isNaN(pin)) { alert("PIN wajib diisi tepat 6 digit angka!"); return; }
 
             try {
-                const { data, error } = await supabaseClient.from('pelanggan').insert([{ nama, no_hp: hp, alamat }]).select();
+                const { data, error } = await supabaseClient.from('pelanggan').insert([{ nama, no_hp: hp, alamat, pin }]).select();
                 if (error) { alert("Gagal Simpan: " + error.message); }
                 else {
                     alert("🎉 Pendaftaran '" + data[0].nama + "' sukses! Silakan login masuk.");
-                    document.getElementById('regNama').value = ''; document.getElementById('regHP').value = ''; document.getElementById('regAlamat').value = '';
-                    switchMenu('login');
+                    document.getElementById('regNama').value = ''; document.getElementById('regHP').value = ''; 
+                    document.getElementById('regAlamat').value = ''; document.getElementById('regPin').value = '';
+                    tampilkanForm('login');
                 }
             } catch (err) { alert("Error Sistem Registrasi: " + err.message); }
         }
 
-        // Proses Login User & Admin
         async function prosesLogin() {
             const idInput = document.getElementById('loginId').value.trim();
             const passInput = document.getElementById('loginPass').value.trim();
-            if(!idInput) { alert("Mohon isi ID Masuk!"); return; }
+            if(!idInput) { alert("Mohon isi data masuk!"); return; }
 
             try {
                 if (currentRole === 'pelanggan') {
@@ -262,19 +290,21 @@
             } catch (err) { alert("Gagal Memproses Otentikasi: " + err.message); }
         }
 
-        // Logout Sifatnya Kembali Ke Halaman Login Awal
         function logout() {
             currentUserData = null;
             document.getElementById('viewPelanggan').classList.add('hidden');
             document.getElementById('viewAdmin').classList.add('hidden');
             document.getElementById('viewAuth').classList.remove('hidden');
+            tampilkanForm('login');
         }
 
-        // Membuka Dashboard Sisi Pelanggan
         async function bukaDashboardPelanggan() {
             document.getElementById('viewAuth').classList.add('hidden');
             document.getElementById('viewPelanggan').classList.remove('hidden');
             
+            let { data } = await supabaseClient.from('pelanggan').select('*').eq('id', currentUserData.id).maybeSingle();
+            if (data) currentUserData = data;
+
             document.getElementById('userNama').innerText = currentUserData.nama;
             document.getElementById('userHP').innerText = currentUserData.no_hp;
             document.getElementById('userPoin').innerText = currentUserData.poin;
@@ -282,59 +312,89 @@
             renderHadiahPelanggan();
         }
 
-        // Render Katalog Hadiah Sisi Pelanggan
         async function renderHadiahPelanggan() {
             const container = document.getElementById('listHadiahPelanggan');
             container.innerHTML = "⏳ Memuat hadiah...";
             
             try {
-                let { data: listHadiah, error } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
+                let { data: listHadiah } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
                 if(listHadiah && listHadiah.length > 0) {
                     container.innerHTML = "";
                     listHadiah.forEach(barang => {
+                        const infoStok = barang.stok > 0 
+                            ? `<p class="text-[11px] text-emerald-600 font-medium">📦 Sisa Stok: ${barang.stok}</p>`
+                            : `<p class="text-[11px] text-rose-600 font-bold">📦 Stok Habis</p>`;
+
                         const itemHtml = `
                             <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs">
                                 <div>
                                     <p class="font-bold text-slate-700">${barang.nama_barang}</p>
                                     <p class="text-[10px] text-amber-600 font-mono font-bold">✨ ${barang.poin_butuh} Poin</p>
+                                    ${infoStok}
                                 </div>
                                 <button onclick="tukarPoinSistem(${barang.id}, ${barang.poin_butuh}, '${barang.nama_barang}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold shadow-sm">Tukar</button>
                             </div>`;
                         container.innerHTML += itemHtml;
                     });
-                } else { container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>Belum ada daftar hadiah saat ini.</p>"; }
+                } else { container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>Belum ada daftar hadiah.</p>"; }
             } catch(e) { container.innerHTML = "Gagal memuat hadiah."; }
         }
 
-        // MODIFIKASI 1: Menyimpan log penukaran ke Supabase secara otomatis saat sukses tukar
+        // UPDATE: Logika Verifikasi PIN Real-Time saat Pelanggan Tukar Poin
         async function tukarPoinSistem(barangId, poinButuh, namaBarang) {
             if(currentUserData.poin < poinButuh) {
                 alert("Maaf, jumlah poin Anda saat ini tidak mencukupi untuk ditukar dengan " + namaBarang);
                 return;
             }
-            if(!confirm("Apakah Anda yakin ingin menukarkan " + poinButuh + " poin dengan " + namaBarang + "?")) return;
 
-            const poinBaru = currentUserData.poin - poinButuh;
+            // Meminta PIN Keamanan Pelanggan
+            const inputPin = prompt("🔒 KODE KEAMANAN\nSilakan masukkan 6 digit PIN Anda untuk konfirmasi penukaran " + namaBarang + ":");
+            
+            if (inputPin === null) return; // Jika membatalkan prompt
+            
+            // Ambil data PIN terbaru di server database untuk dicocokkan
             try {
-                // 1. Potong Poin Pelanggan
+                let { data: cekUser, error: errUser } = await supabaseClient.from('pelanggan').select('pin, poin').eq('id', currentUserData.id).maybeSingle();
+                if(errUser || !cekUser) {
+                    alert("Gagal memverifikasi keamanan akun Anda. Silakan coba lagi.");
+                    return;
+                }
+
+                // Proteksi kecocokan PIN
+                if (inputPin !== cekUser.pin) {
+                    alert("❌ PIN SALAH!\nKode PIN transaksi yang Anda masukkan tidak sesuai. Penukaran dibatalkan.");
+                    return;
+                }
+
+                // Lanjut cek stok barang terbaru langsung dari server
+                let { data: cekBarang, error: errCek } = await supabaseClient.from('barang_tukar').select('stok').eq('id', barangId).maybeSingle();
+                if(errCek || !cekBarang) { alert("Gagal melakukan pengecekan data barang."); return; }
+
+                if(cekBarang.stok < 1) {
+                    alert("⚠️ PENUKARAN GAGAL!\nMaaf, Stok barang '" + namaBarang + "' sudah habis!");
+                    renderHadiahPelanggan(); 
+                    return;
+                }
+
+                const poinBaru = cekUser.poin - poinButuh;
+                const stokBaru = cekBarang.stok - 1;
+
                 const { error: err1 } = await supabaseClient.from('pelanggan').update({ poin: poinBaru }).eq('id', currentUserData.id);
-                
-                // 2. Buat Catatan (Log) untuk Dashboard Admin
-                const { error: err2 } = await supabaseClient.from('log_penukaran').insert([
+                const { error: err2 } = await supabaseClient.from('barang_tukar').update({ stok: stokBaru }).eq('id', barangId);
+                const { error: err3 } = await supabaseClient.from('log_penukaran').insert([
                     { nama_pelanggan: currentUserData.nama, nama_barang: namaBarang, jumlah_poin: poinButuh }
                 ]);
 
-                if(err1 || err2) { 
-                    alert("Gagal melakukan transaksi penukaran: " + (err1?.message || err2?.message)); 
+                if(err1 || err2 || err3) { 
+                    alert("Gagal transaksi: " + (err1?.message || err2?.message || err3?.message)); 
                 } else {
-                    alert("🎉 BERHASIL!\nPenukaran '" + namaBarang + "' sukses.\nPoin Anda terpotong " + poinButuh + " poin.");
+                    alert("🎉 BERHASIL!\nPIN Valid. Penukaran '" + namaBarang + "' sukses.\nSisa stok: " + stokBaru);
                     currentUserData.poin = poinBaru;
                     bukaDashboardPelanggan(); 
                 }
             } catch(err) { alert("Crash Penukaran Poin: " + err.message); }
         }
 
-        // Membuka Panel Admin
         function bukaPanelAdmin() {
             document.getElementById('viewAuth').classList.add('hidden');
             document.getElementById('viewAdmin').classList.remove('hidden');
@@ -342,7 +402,6 @@
             loadNilaiKonversiSistem();
         }
 
-        // Navigasi Tab di Dalam Panel Admin
         function setAdminTab(tab) {
             document.getElementById('panelAdminInput').classList.add('hidden');
             document.getElementById('panelAdminData').classList.add('hidden');
@@ -366,7 +425,6 @@
             }
         }
 
-        // Proses Menambah Poin Pelanggan Berdasarkan Nominal Belanja
         async function prosesTambahPoin() {
             const targetHP = document.getElementById('admInputHP').value.trim();
             const nominalBelanja = parseFloat(document.getElementById('admInputBelanja').value);
@@ -377,40 +435,34 @@
             }
 
             try {
-                let { data: pelanggan, error } = await supabaseClient.from('pelanggan').select('*').eq('no_hp', targetHP).maybeSingle();
-                if(!pelanggan) {
-                    alert("Gagal: Pelanggan dengan Nomor HP '" + targetHP + "' tidak ditemukan!");
-                    return;
-                }
+                let { data: pelanggan } = await supabaseClient.from('pelanggan').select('*').eq('no_hp', targetHP).maybeSingle();
+                if(!pelanggan) { alert("Gagal: Pelanggan tidak ditemukan!"); return; }
 
                 const tambahanPoin = Math.floor(nominalBelanja / nilaiKonversiGlobal);
                 if(tambahanPoin < 1) {
-                    alert("Info: Total belanja belum mencapai kelipatan minimal Rp " + nilaiKonversiGlobal.toLocaleString('id-ID') + " untuk mendapatkan 1 poin.");
+                    alert("Info: Belanja belum mencapai kelipatan minimal Rp " + nilaiKonversiGlobal.toLocaleString('id-ID'));
                     return;
                 }
 
                 const totalPoinBaru = pelanggan.poin + tambahanPoin;
                 const { error: updErr } = await supabaseClient.from('pelanggan').update({ poin: totalPoinBaru }).eq('id', pelanggan.id);
-                if(updErr) { alert("Gagal update poin: " + updErr.message); }
+                if(updErr) { alert("Gagal update: " + updErr.message); }
                 else {
-                    alert("✅ POIN BERHASIL DITAMBAHKAN!\nPelanggan: " + pelanggan.nama + "\nTambahan: +" + tambahanPoin + " Poin\nTotal Sisa Poin Sekarang: " + totalPoinBaru);
+                    alert("✅ POIN BERHASIL DITAMBAHKAN!\nPelanggan: " + pelanggan.nama + "\nTambahan: +" + tambahanPoin + " Poin");
                     document.getElementById('admInputBelanja').value = "";
                 }
-            } catch(e) { alert("Error sistem hitung poin: " + e.message); }
+            } catch(e) { alert("Error sistem hitung poin."); }
         }
 
-        // MODIFIKASI 2: Mengambil log penukaran terbaru untuk ditampilkan di tab "Data Toko"
         async function loadDataTokoAdmin() {
             const tableBody = document.getElementById('tablePelangganBody');
             const boxKaryawan = document.getElementById('listKaryawan');
             const boxRiwayat = document.getElementById('listRiwayatPenukaran');
             
             tableBody.innerHTML = "<tr><td colspan='2' class='p-2 text-center text-slate-400'>Loading...</td></tr>";
-            if(boxRiwayat) boxRiwayat.innerHTML = "<p class='text-slate-400 text-center py-2'>Loading riwayat...</p>";
             
             try {
-                // Ambil Data Pelanggan
-                let { data: listP, error: err1 } = await supabaseClient.from('pelanggan').select('*').order('nama', { ascending: true });
+                let { data: listP } = await supabaseClient.from('pelanggan').select('*').order('nama', { ascending: true });
                 if(listP) {
                     cachePelanggan = listP; 
                     tableBody.innerHTML = "";
@@ -423,8 +475,7 @@
                     });
                 }
 
-                // Ambil Data Karyawan
-                let { data: listK, error: err2 } = await supabaseClient.from('karyawan').select('nama, username');
+                let { data: listK } = await supabaseClient.from('karyawan').select('nama, username');
                 if(listK) {
                     boxKaryawan.innerHTML = "";
                     listK.forEach(k => {
@@ -435,8 +486,7 @@
                     });
                 }
 
-                // Ambil Data Log Penukaran Terbaru (10 Transaksi Terakhir)
-                let { data: logs, error: err3 } = await supabaseClient.from('log_penukaran').select('*').order('created_at', { ascending: false }).limit(10);
+                let { data: logs } = await supabaseClient.from('log_penukaran').select('*').order('created_at', { ascending: false }).limit(10);
                 if(logs && boxRiwayat) {
                     boxRiwayat.innerHTML = "";
                     if(logs.length === 0) {
@@ -448,79 +498,67 @@
                                 <div class="border-b border-slate-200 py-1.5 last:border-0">
                                     <span class="font-bold text-slate-700">${l.nama_pelanggan}</span> 
                                     <span class="text-slate-500">tukar</span> <b class="text-emerald-600">${l.nama_barang}</b>
-                                    <div class="text-[10px] text-slate-400">${tgl} - Keluar ${l.jumlah_poin} Poin</div>
+                                    <div class="text-[10px] text-slate-400">${tgl} - ${l.jumlah_poin} Pts</div>
                                 </div>`;
                         });
                     }
                 }
-            } catch (e) { 
-                if(boxRiwayat) boxRiwayat.innerHTML = "<p class='text-rose-500 text-center py-2'>Gagal memuat riwayat.</p>";
-            }
+            } catch (e) { console.log("Gagal memuat log admin."); }
         }
 
-        // Export Data Member Ke File Excel
         function exportPelangganExcel() {
-            if(cachePelanggan.length === 0) { alert("Tidak ada data pelanggan untuk diekspor!"); return; }
+            if(cachePelanggan.length === 0) { alert("Tidak ada data pelanggan!"); return; }
             try {
                 var wb = XLSX.utils.book_new();
-                var barisData = [['Nama Pelanggan', 'Nomor Handphone', 'Alamat Domisili', 'Jumlah Sisa Poin', 'Tanggal Registrasi Member']];
-                
-                cachePelanggan.forEach(p => {
-                    barisData.push([p.nama, p.no_hp, p.alamat, p.poin, p.tanggal_daftar]);
-                });
-
+                var barisData = [['Nama Pelanggan', 'Nomor Handphone', 'Alamat Domisili', 'Jumlah Sisa Poin']];
+                cachePelanggan.forEach(p => { barisData.push([p.nama, p.no_hp, p.alamat, p.poin]); });
                 var ws = XLSX.utils.aoa_to_sheet(barisData);
                 XLSX.utils.book_append_sheet(wb, ws, "Data Pelanggan");
                 XLSX.writeFile(wb, "Laporan_Pelanggan_RajaDiscount.xlsx");
-            } catch(err) { alert("Gagal mengolah file Excel: " + err.message); }
+            } catch(err) { alert("Gagal mengolah file Excel."); }
         }
 
-        // Menyimpan Aturan Konversi Poin Rupiah Baru
         async function simpanConfigPoin() {
             const nominalBaru = parseInt(document.getElementById('cfgBelanja').value);
-            if(isNaN(nominalBaru) || nominalBaru <= 0) { alert("Masukkan nominal angka kelipatan belanja yang valid!"); return; }
+            if(isNaN(nominalBaru) || nominalBaru <= 0) { alert("Masukkan nominal yang valid!"); return; }
 
             try {
                 const { error } = await supabaseClient.from('pengaturan_poin').update({ konversi_belanja: nominalBaru }).eq('id', 1);
-                if(error) { alert("Gagal update aturan konversi: " + error.message); }
-                else {
-                    alert("Aturan berhasil diperbarui! Kelipatan Rp " + nominalBaru.toLocaleString('id-ID') + " = 1 Poin.");
-                    loadNilaiKonversiSistem();
-                }
-            } catch(e) { alert("Error sistem ubah aturan konversi."); }
+                if(!error) { alert("Aturan diperbarui!"); loadNilaiKonversiSistem(); }
+            } catch(e) { alert("Error sistem ubah aturan."); }
         }
 
-        // Tambah Barang Hadiah Secara Manual
         async function tambahBarangHadiah() {
             const namaBarang = document.getElementById('addNamaBarang').value.trim();
             const poinButuh = parseInt(document.getElementById('addPoinButuh').value);
+            const stokAwal = parseInt(document.getElementById('addStokBarang').value);
 
-            if(!namaBarang || isNaN(poinButuh) || poinButuh <= 0) { alert("Mohon isi nama barang dan poin dengan benar!"); return; }
+            if(!namaBarang || isNaN(poinButuh) || poinButuh <= 0 || isNaN(stokAwal) || stokAwal < 0) { 
+                alert("Mohon isi seluruh form dengan benar!"); 
+                return; 
+            }
 
             try {
-                const { error } = await supabaseClient.from('barang_tukar').insert([{ nama_barang: namaBarang, poin_butuh: poinButuh }]);
-                if(error) { alert("Gagal menambah barang: " + error.message); }
-                else {
+                const { error } = await supabaseClient.from('barang_tukar').insert([{ nama_barang: namaBarang, poin_butuh: poinButuh, stok: stokAwal }]);
+                if(!error) {
                     alert("Barang '" + namaBarang + "' berhasil ditambahkan!");
-                    document.getElementById('addNamaBarang').value = ""; document.getElementById('addPoinButuh').value = "";
+                    document.getElementById('addNamaBarang').value = ""; document.getElementById('addPoinButuh').value = ""; document.getElementById('addStokBarang').value = "";
                     renderHadiahAdminView();
                 }
             } catch(e) { alert("Error database tambah hadiah."); }
         }
 
-        // Render List Barang Hadiah di Sisi Admin Pengaturan
         async function renderHadiahAdminView() {
             const container = document.getElementById('listHadiahAdmin');
             container.innerHTML = "Loading...";
             try {
-                let { data: listHadiah, error } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
-                
+                let { data: listHadiah } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
                 if(listHadiah) { 
                     container.innerHTML = "";
                     listHadiah.forEach(b => {
                         container.innerHTML += `
                             <div class="flex justify-between items-center bg-white p-1.5 border rounded-lg text-xs mb-1">
-                                <span><b>${b.nama_barang}</b> (${b.poin_butuh} Pts)</span>
+                                <span><b>${b.nama_barang}</b> (${b.poin_butuh} Pts) <span class="text-indigo-600 font-bold">[Stok: ${b.stok}]</span></span>
                                 <button onclick="hapusBarangHadiah(${b.id}, '${b.nama_barang}')" class="text-rose-600 font-bold px-1 bg-rose-50 rounded">Hapus</button>
                             </div>`;
                     });
@@ -528,13 +566,11 @@
             } catch(e) { container.innerHTML = "Gagal memuat daftar."; }
         }
 
-        // Hapus Barang Hadiah
         async function hapusBarangHadiah(id, nama) {
-            if(!confirm("Hapus '" + nama + "' dari daftar hadiah? Pelanggan tidak akan bisa menukarnya lagi.")) return;
+            if(!confirm("Hapus '" + nama + "' dari daftar hadiah?")) return;
             try {
                 const { error } = await supabaseClient.from('barang_tukar').delete().eq('id', id);
-                if(error) { alert("Gagal menghapus: " + error.message); }
-                else { renderHadiahAdminView(); }
+                if(!error) { renderHadiahAdminView(); }
             } catch(e) { alert("Crash Sistem Hapus."); }
         }
     </script>
