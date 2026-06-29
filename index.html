@@ -12,6 +12,7 @@
 
     <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden my-2">
         
+        <!-- Header Banner -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 text-center text-white relative">
             <div class="absolute top-3 right-3">
                 <span id="statusKoneksi" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500 text-white font-mono scale-90 animate-pulse">
@@ -24,7 +25,9 @@
             </div>
         </div>
 
+        <!-- View Auth -->
         <div id="viewAuth" class="p-5 space-y-5">
+            <!-- FORM LOGIN -->
             <div id="formLogin" class="space-y-3">
                 <div class="text-center mb-2">
                     <h2 class="font-bold text-slate-700 text-base">🔓 Masuk ke Sistem</h2>
@@ -47,6 +50,7 @@
                 </div>
             </div>
 
+            <!-- FORM REGISTER -->
             <div id="formRegister" class="space-y-3 hidden">
                 <div class="text-center mb-2">
                     <h2 class="font-bold text-slate-700 text-base">📝 Form Pendaftaran Member</h2>
@@ -71,6 +75,7 @@
             </div>
         </div>
 
+        <!-- View Dashboard Pelanggan -->
         <div id="viewPelanggan" class="p-5 space-y-4 hidden">
             <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-white shadow-md">
                 <p class="text-xs text-emerald-100">Selamat Datang,</p>
@@ -90,6 +95,7 @@
             <button onclick="logout()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 p-2 rounded-xl text-xs font-medium transition-all">Keluar Akun</button>
         </div>
 
+        <!-- View Dashboard Admin -->
         <div id="viewAdmin" class="p-5 space-y-4 hidden">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-sm font-black text-slate-700 uppercase">🛠️ Panel Admin Toko</h2>
@@ -102,6 +108,7 @@
                 <button onclick="setAdminTab('setting')" id="tabAdmSetting" class="py-1.5 text-center rounded-lg text-slate-600">⚙️ Pengaturan</button>
             </div>
 
+            <!-- Tab Admin: Input Poin Belanja -->
             <div id="panelAdminInput" class="space-y-3">
                 <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
                     <span class="text-[10px] uppercase font-bold text-indigo-500 block">Sistem Konversi Saat Ini:</span>
@@ -114,6 +121,7 @@
                 </div>
             </div>
 
+            <!-- Tab Admin: Data Toko -->
             <div id="panelAdminData" class="space-y-4 hidden">
                 <div>
                     <div class="flex justify-between items-center mb-1">
@@ -146,21 +154,27 @@
                 </div>
             </div>
 
+            <!-- Tab Admin: Pengaturan (SUDAH DIPISAH) -->
             <div id="panelAdminSetting" class="space-y-4 hidden">
-                <div class="border p-3 rounded-xl bg-slate-50 space-y-3">
-                    <span class="text-xs font-bold text-slate-600 block">⚙️ Konfigurasi Utama Sistem</span>
-                    <div class="space-y-2">
-                        <div>
-                            <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Kelipatan Belanja (Rp)</label>
-                            <input type="number" id="cfgBelanja" placeholder="Misal: 50000" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">No. WA Admin Notifikasi</label>
-                            <input type="text" id="cfgWaAdmin" placeholder="Contoh: 6285228449276" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628123xxx</b></span>
-                        </div>
-                        <button onclick="simpanConfigPoin()" class="w-full bg-slate-800 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-slate-900">Simpan Perubahan Sistem</button>
+                
+                <!-- INPUTAN 1: KELIPATAN BELANJA -->
+                <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
+                    <span class="text-xs font-bold text-slate-600 block">⚙️ Aturan Kelipatan Belanja</span>
+                    <div>
+                        <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Kelipatan Belanja (Rp)</label>
+                        <input type="number" id="cfgBelanja" placeholder="Misal: 50000" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
+                    <button onclick="simpanKelipatanBelanja()" class="w-full bg-slate-800 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-slate-900">Simpan Kelipatan Belanja</button>
+                </div>
+
+                <!-- INPUTAN 2: NOMOR WHATSAPP ADMIN -->
+                <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
+                    <span class="text-xs font-bold text-slate-600 block">📞 No. WA Admin Notifikasi</span>
+                    <div>
+                        <input type="text" id="cfgWaAdmin" placeholder="Contoh: 6285228449276" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628123xxx</b></span>
+                    </div>
+                    <button onclick="simpanWaAdmin()" class="w-full bg-indigo-600 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-indigo-700">Simpan Nomor WA Admin</button>
                 </div>
 
                 <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
@@ -248,15 +262,21 @@
 
         async function loadNilaiKonversiSistem() {
             try {
-                let { data, error } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja, wa_admin').eq('id', 1).maybeSingle();
-                if (data) {
-                    nilaiKonversiGlobal = data.konversi_belanja;
-                    noWaAdminGlobal = data.wa_admin || "6285228449276";
+                // Ambil Kelipatan Belanja
+                let { data: dataPoin } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja').eq('id', 1).maybeSingle();
+                if (dataPoin) {
+                    nilaiKonversiGlobal = dataPoin.konversi_belanja;
                     document.getElementById('txtKonversiSistem').innerText = "Rp " + nilaiKonversiGlobal.toLocaleString('id-ID');
                     document.getElementById('cfgBelanja').value = nilaiKonversiGlobal;
+                }
+                
+                // Ambil No WA Admin dari TABEL TERPISAH
+                let { data: dataWa } = await supabaseClient.from('pengaturan_wa').select('wa_admin').eq('id', 1).maybeSingle();
+                if (dataWa) {
+                    noWaAdminGlobal = dataWa.wa_admin || "6285228449276";
                     document.getElementById('cfgWaAdmin').value = noWaAdminGlobal;
                 }
-            } catch(e) { console.log("Gagal memuat aturan konversi."); }
+            } catch(e) { console.log("Gagal memuat konfigurasi sistem."); }
         }
 
         async function prosesRegistrasi() {
@@ -388,17 +408,11 @@
                 if(err1 || err2 || err3) { 
                     alert("Gagal transaksi: " + (err1?.message || err2?.message || err3?.message)); 
                 } else {
-                    // Update data lokal terlebih dahulu
                     currentUserData.poin = poinBaru;
-
-                    // Format Pesan Teks WA Otomatis
                     const textNotifWA = `*NOTIFIKASI KLAIM HADIAH - RAJA DISCOUNT*\n\nHalo Admin Toko, saya telah sukses melakukan penukaran poin lewat sistem web:\n\n👤 *Nama Member:* ${currentUserData.nama}\n📱 *No. Handphone:* ${currentUserData.no_hp}\n🎁 *Barang Hadiah:* ${namaBarang}\n✨ *Poin Dipotong:* ${poinButuh} Poin\n📦 *Sisa Stok Toko:* ${stokBaru} Pcs\n\nMohon hadiah ini segera disiapkan ya Admin. Terima kasih banyak! 🙏`;
-                    
-                    // Menggunakan wa.me dan direct location agar tembus blokir pop-up browser HP
                     const urlWhatsAppRedirect = `https://wa.me/${noWaAdminGlobal}?text=${encodeURIComponent(textNotifWA)}`;
                     
                     alert("🎉 BERHASIL!\nPIN Valid. Penukaran '" + namaBarang + "' sukses.\n\nHalaman akan langsung beralih ke WhatsApp untuk mengirim nota klaim ke toko.");
-                    
                     window.location.href = urlWhatsAppRedirect;
                 }
             } catch(err) { alert("Crash Penukaran Poin: " + err.message); }
@@ -526,28 +540,46 @@
             } catch(err) { alert("Gagal mengolah file Excel."); }
         }
 
-        async function simpanConfigPoin() {
+        // FUNGSI BARU 1: SIMPAN KELIPATAN BELANJA
+        async function simpanKelipatanBelanja() {
             const nominalBaru = parseInt(document.getElementById('cfgBelanja').value);
-            const waBaru = document.getElementById('cfgWaAdmin').value.trim();
-            
-            if(isNaN(nominalBaru) || nominalBaru <= 0 || !waBaru) { 
-                alert("Mohon masukkan nominal belanja dan nomor WA admin yang valid!"); 
+            if(isNaN(nominalBaru) || nominalBaru <= 0) { 
+                alert("Mohon masukkan nominal kelipatan belanja yang valid!"); 
                 return; 
             }
-
             try {
                 const { error } = await supabaseClient.from('pengaturan_poin').update({ 
-                    konversi_belanja: nominalBaru,
-                    wa_admin: waBaru 
+                    konversi_belanja: nominalBaru
                 }).eq('id', 1);
                 
                 if(!error) { 
-                    alert("🎉 PENGATURAN BERHASIL DISIMPAN!\nAturan poin & Nomor WA Notifikasi berhasil diperbarui."); 
+                    alert("🎉 BERHASIL!\nAturan kelipatan belanja telah diperbarui."); 
                     loadNilaiKonversiSistem(); 
                 } else {
                     alert("Gagal memperbarui database: " + error.message);
                 }
-            } catch(e) { alert("Error database sistem ubah aturan."); }
+            } catch(e) { alert("Error database saat mengubah aturan belanja."); }
+        }
+
+        // FUNGSI BARU 2: SIMPAN NOMOR WA ADMIN
+        async function simpanWaAdmin() {
+            const waBaru = document.getElementById('cfgWaAdmin').value.trim();
+            if(!waBaru) { 
+                alert("Mohon masukkan nomor WhatsApp admin yang valid!"); 
+                return; 
+            }
+            try {
+                const { error } = await supabaseClient.from('pengaturan_wa').update({ 
+                    wa_admin: waBaru 
+                }).eq('id', 1);
+                
+                if(!error) { 
+                    alert("🎉 BERHASIL!\nNomor WhatsApp Admin Notifikasi berhasil diperbarui."); 
+                    loadNilaiKonversiSistem(); 
+                } else {
+                    alert("Gagal memperbarui database: " + error.message);
+                }
+            } catch(e) { alert("Error database saat mengubah nomor WA."); }
         }
 
         async function tambahBarangHadiah() {
