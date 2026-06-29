@@ -125,7 +125,8 @@
                             <thead>
                                 <tr class="bg-slate-200 text-slate-700 font-bold border-b">
                                     <th class="p-2">Nama (HP)</th>
-                                    <th class="p-2 text-right">Poin</th>
+                                    <th class="p-2 text-center">Poin</th>
+                                    <th class="p-2 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tablePelangganBody"></tbody>
@@ -162,7 +163,7 @@
                     <div>
                         <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Nomor WhatsApp Admin</label>
                         <input type="text" id="cfgWaAdmin" placeholder="Contoh: 628818670985" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628123xxx</b></span>
+                        <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628818670985</b></span>
                     </div>
                     <button onclick="simpanWaAdmin()" class="w-full bg-indigo-600 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-indigo-700">Simpan Nomor WA Admin</button>
                 </div>
@@ -469,7 +470,7 @@
             const tableBody = document.getElementById('tablePelangganBody');
             const boxKaryawan = document.getElementById('listKaryawan');
             const boxRiwayat = document.getElementById('listRiwayatPenukaran');
-            tableBody.innerHTML = "<tr><td colspan='2' class='p-2 text-center text-slate-400'>Loading...</td></tr>";
+            tableBody.innerHTML = "<tr><td colspan='3' class='p-2 text-center text-slate-400'>Loading...</td></tr>";
             
             try {
                 let { data: listP } = await supabaseClient.from('pelanggan').select('*').order('nama', { ascending: true });
@@ -480,7 +481,10 @@
                         tableBody.innerHTML += `
                             <tr class="border-b hover:bg-slate-100/50">
                                 <td class="p-2 font-medium text-slate-700">${p.nama}<br><span class="text-[10px] text-slate-400 font-mono">${p.no_hp}</span></td>
-                                <td class="p-2 text-right font-bold font-mono text-indigo-600">${p.poin}</td>
+                                <td class="p-2 text-center font-bold font-mono text-indigo-600">${p.poin}</td>
+                                <td class="p-2 text-center">
+                                    <button onclick="koreksiPoinPelanggan(${p.id}, '${p.nama}', ${p.poin})" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] px-2 py-1 rounded font-bold shadow-sm transition-all">✏️ Edit</button>
+                                </td>
                             </tr>`;
                     });
                 }
@@ -514,6 +518,29 @@
                     }
                 }
             } catch (e) { console.log("Gagal memuat log admin."); }
+        }
+
+        async function koreksiPoinPelanggan(id, nama, poinSekarang) {
+            const inputPoinBaru = prompt(`⚙️ KOREKSI POIN PELANGGAN\n\nNama: ${nama}\nPoin Saat Ini: ${poinSekarang}\n\nMakin jumlah total poin yang BARU:`, poinSekarang);
+            if (inputPoinBaru === null) return;
+            
+            const poinBaru = parseInt(inputPoinBaru.trim());
+            if (isNaN(poinBaru) || poinBaru < 0) {
+                alert("❌ GAGAL: Jumlah poin baru harus berupa angka dan tidak boleh minus!");
+                return;
+            }
+
+            if (!confirm(`Apakah Anda yakin ingin mengubah poin ${nama} dari ${poinSekarang} menjadi ${poinBaru}?`)) return;
+
+            try {
+                const { error } = await supabaseClient.from('pelanggan').update({ poin: poinBaru }).eq('id', id);
+                if (error) {
+                    alert("Gagal memperbarui data: " + error.message);
+                } else {
+                    alert(`✅ BERHASIL!\nPoin untuk pelanggan '${nama}' telah disesuaikan menjadi ${poinBaru} poin.`);
+                    loadDataTokoAdmin();
+                }
+            } catch (err) { alert("Terjadi kesalahan sistem saat mengedit poin: " + err.message); }
         }
 
         function exportPelangganExcel() {
@@ -560,7 +587,7 @@
                 }).eq('id', 1);
                 
                 if(!error) { 
-                    alert("🎉 BERHASIL!\nNomor WhatsApp Admin Notifikasi berhasil diperbarui."); 
+                    alert("🎉 BERHASIL!\nNomor WhatsApp Admin Notifikasi berhasil diperbarui di database."); 
                     loadNilaiKonversiSistem(); 
                 } else {
                     alert("Gagal memperbarui database: " + error.message);
