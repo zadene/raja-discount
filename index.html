@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Raja Discount - Sistem Poin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 font-sans text-slate-800">
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden my-2">
+        
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 text-center text-white relative">
+            <div class="absolute top-3 right-3">
+                <span id="statusKoneksi" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-400 text-amber-900 font-mono scale-90">
+                    🔄 Checking...
+                </span>
+            </div>
+            <h1 class="text-xl font-black tracking-wide uppercase">🏪 Raja Discount</h1>
+            <div class="inline-block mt-2 bg-white/10 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/20 text-[11px]">
+                🕒 Jam Buka: <span class="font-bold">08.00 - 17.00 WIB</span>
+            </div>
+        </div>
+
+        <div id="viewAuth" class="p-5 space-y-5">
+            <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-medium">
+                <button onclick="switchMenu('register')" id="tabRegister" class="flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all">📝 Daftar Baru</button>
+                <button onclick="switchMenu('login')" id="tabLogin" class="flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all">🔓 Masuk</button>
+            </div>
+
+            <div id="formRegister" class="space-y-3">
+                <input type="text" id="regNama" placeholder="Nama Lengkap Pelanggan" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="tel" id="regHP" placeholder="Nomor HP Pelanggan" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" id="regAlamat" placeholder="Alamat Rumah" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="prosesRegistrasi()" id="btnReg" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Daftarkan Pelanggan</button>
+            </div>
+
+            <div id="formLogin" class="space-y-3 hidden">
+                <div class="flex border-b border-slate-100 text-xs font-bold mb-1">
+                    <button onclick="setRole('pelanggan')" id="subTabP" class="flex-1 py-2 text-center border-b-2 border-blue-600 text-blue-600">👤 Pelanggan</button>
+                    <button onclick="setRole('admin')" id="subTabA" class="flex-1 py-2 text-center text-slate-400 border-transparent">🔑 Admin Toko</button>
+                </div>
+                <input type="text" id="loginId" placeholder="Masukkan No HP Anda" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="loginPass" placeholder="Password Admin" class="w-full p-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
+                <button onclick="prosesLogin()" id="btnMasuk" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Masuk Ke Sistem</button>
+            </div>
+        </div>
+
+        <div id="viewPelanggan" class="p-5 space-y-4 hidden">
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 text-white shadow-md">
+                <p class="text-xs text-emerald-100">Selamat Datang,</p>
+                <h2 id="userNama" class="text-lg font-bold">Nama Pelanggan</h2>
+                <p id="userHP" class="text-xs text-emerald-100 font-mono">081234xxx</p>
+                <div class="mt-3 border-t border-white/20 pt-2 flex justify-between items-center">
+                    <span class="text-xs tracking-wide uppercase font-medium">Sisa Poin Member:</span>
+                    <span id="userPoin" class="text-2xl font-black font-mono">0</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🎁 Tukar Poin Hadiah</h3>
+                <div id="listHadiahPelanggan" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                </div>
+            </div>
+
+            <button onclick="logout()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 p-2 rounded-xl text-xs font-medium transition-all">Keluar Akun</button>
+        </div>
+
+        <div id="viewAdmin" class="p-5 space-y-4 hidden">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-sm font-black text-slate-700 uppercase">🛠️ Panel Admin Toko</h2>
+                <button onclick="logout()" class="text-xs bg-red-50 text-red-600 px-2 py-1 rounded-lg font-bold">Keluar</button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl text-[11px] font-bold">
+                <button onclick="setAdminTab('input')" id="tabAdmInput" class="py-1.5 text-center rounded-lg bg-white text-indigo-600 shadow-sm">⚡ Input Poin</button>
+                <button onclick="setAdminTab('data')" id="tabAdmData" class="py-1.5 text-center rounded-lg text-slate-600">👥 Data Toko</button>
+                <button onclick="setAdminTab('setting')" id="tabAdmSetting" class="py-1.5 text-center rounded-lg text-slate-600">⚙️ Pengaturan</button>
+            </div>
+
+            <div id="panelAdminInput" class="space-y-3">
+                <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100">
+                    <span class="text-[10px] uppercase font-bold text-indigo-500 block">Sistem Konversi Saat Ini:</span>
+                    <p class="text-xs text-indigo-900 font-medium">Belanja Kelipatan <span id="txtKonversiSistem" class="font-bold font-mono">Rp 50,000</span> = <span class="font-bold">1 Poin</span></p>
+                </div>
+                <div class="space-y-2">
+                    <input type="tel" id="admInputHP" placeholder="Masukkan Nomor HP Pelanggan" class="w-full p-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="number" id="admInputBelanja" placeholder="Total Belanja (Rupiah). Contoh: 150000" class="w-full p-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button onclick="prosesTambahPoin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl text-sm font-bold shadow-md transition-all">Konversi Jadi Poin & Simpan</button>
+                </div>
+            </div>
+
+            <div id="panelAdminData" class="space-y-4 hidden">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-slate-500">👥 Daftar Pelanggan</span>
+                        <button onclick="exportPelangganExcel()" class="text-[11px] bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded font-bold shadow-sm transition-all">📥 Export Excel</button>
+                    </div>
+                    <div class="border rounded-xl overflow-hidden max-h-40 overflow-y-auto bg-slate-50">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-700 font-bold border-b">
+                                    <th class="p-2">Nama (HP)</th>
+                                    <th class="p-2 text-right">Poin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablePelangganBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-xs font-bold text-slate-500 block mb-1">👔 Daftar Karyawan</span>
+                    <div class="border rounded-xl p-2 max-h-24 overflow-y-auto bg-slate-50 text-xs space-y-1" id="listKaryawan">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="text-xs font-bold text-slate-500 block mb-1">📜 Riwayat Penukaran Hadiah</span>
+                    <div class="border rounded-xl p-2 max-h-40 overflow-y-auto bg-slate-50 text-xs space-y-1" id="listRiwayatPenukaran">
+                        <p class="text-slate-400 text-center py-2">Loading riwayat...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panelAdminSetting" class="space-y-4 hidden">
+                <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
+                    <span class="text-xs font-bold text-slate-600 block">🛠️ Ubah Kelipatan Poin Belanja</span>
+                    <div class="flex gap-2">
+                        <input type="number" id="cfgBelanja" placeholder="Misal: 50000" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="simpanConfigPoin()" class="bg-slate-800 text-white text-xs px-3 py-2 rounded-xl font-bold">Update</button>
+                    </div>
+                </div>
+
+                <div class="border p-3 rounded-xl bg-slate-50 space-y-2">
+                    <span class="text-xs font-bold text-slate-600 block">➕ Tambah Barang Hadiah Baru</span>
+                    <input type="text" id="addNamaBarang" placeholder="Nama Barang (Contoh: Minyak Goreng 1L)" class="w-full p-2 text-xs border rounded-xl">
+                    <input type="number" id="addPoinButuh" placeholder="Jumlah Poin Yang Dibutuhkan" class="w-full p-2 text-xs border rounded-xl">
+                    <button onclick="tambahBarangHadiah()" class="w-full bg-blue-600 text-white text-xs p-2 rounded-xl font-bold">Simpan Barang</button>
+                </div>
+
+                <div>
+                    <span class="text-xs font-bold text-slate-500 block mb-1">🗑️ List Barang Hadiah Aktif</span>
+                    <div id="listHadiahAdmin" class="space-y-1 max-h-32 overflow-y-auto">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <p class="text-[10px] text-slate-400 mt-2 tracking-wide">© 2026 Toko Raja Discount. All rights reserved.</p>
+
+    <script>
+        const SUPABASE_URL = "https://ywabhemuxeswagynhczr.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3YWJoZW11eGVzd2FneW5oY3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NzQ2MDQsImV4cCI6MjA5ODI1MDYwNH0.5Iy9rYZPwEl-VZlyB6OIyLqgmjv41Jvg_0SXr3h55XI";
+        
+        let supabaseClient = null; 
+        let currentRole = 'pelanggan';
+        let currentUserData = null; 
+        let nilaiKonversiGlobal = 50000; 
+        let cachePelanggan = []; 
+
+        // 1. Inisialisasi Database
+        try {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                const badgeStatus = document.getElementById('statusKoneksi');
+                badgeStatus.className = "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500 text-white font-mono scale-90 animate-pulse";
+                badgeStatus.innerText = "● Online";
+                loadNilaiKonversiSistem();
+            } else { throw new Error(); }
+        } catch (e) {
+            const badgeStatus = document.getElementById('statusKoneksi');
+            badgeStatus.className = "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-500 text-white font-mono scale-90";
+            badgeStatus.innerText = "● Offline";
+        }
+
+        // Navigasi Tampilan Login/Register
+        function switchMenu(menu) {
+            if(menu === 'register') {
+                document.getElementById('tabRegister').className = "flex-1 py-2 text-center rounded-lg bg-white text-blue-600 shadow-sm transition-all";
+                document.getElementById('tabLogin').className = "flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+                document.getElementById('formRegister').classList.remove('hidden');
+                document.getElementById('formLogin').classList.add('hidden');
+            } else {
+                document.getElementById('tabLogin').className = "flex-1 py-2 text-center rounded-lg bg-white text-indigo-600 shadow-sm transition-all";
+                document.getElementById('tabRegister').className = "flex-1 py-2 text-center rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+                document.getElementById('formLogin').classList.remove('hidden');
+                document.getElementById('formRegister').classList.add('hidden');
+            }
+        }
+
+        // Ganti Hak Akses Form Login
+        function setRole(role) {
+            currentRole = role;
+            if(role === 'pelanggan') {
+                document.getElementById('subTabP').className = "flex-1 py-2 text-center border-b-2 border-blue-600 text-blue-600";
+                document.getElementById('subTabA').className = "flex-1 py-2 text-center text-slate-400 border-transparent";
+                document.getElementById('loginId').placeholder = "Masukkan No HP Anda";
+                document.getElementById('loginPass').classList.add('hidden');
+            } else {
+                document.getElementById('subTabA').className = "flex-1 py-2 text-center border-b-2 border-indigo-600 text-indigo-600";
+                document.getElementById('subTabP').className = "flex-1 py-2 text-center text-slate-400 border-transparent";
+                document.getElementById('loginId').placeholder = "Username Admin";
+                document.getElementById('loginPass').classList.remove('hidden');
+            }
+        }
+
+        // Ambil Data Pengaturan Konversi Poin
+        async function loadNilaiKonversiSistem() {
+            try {
+                let { data, error } = await supabaseClient.from('pengaturan_poin').select('konversi_belanja').eq('id', 1).maybeSingle();
+                if (data) {
+                    nilaiKonversiGlobal = data.konversi_belanja;
+                    document.getElementById('txtKonversiSistem').innerText = "Rp " + nilaiKonversiGlobal.toLocaleString('id-ID');
+                    document.getElementById('cfgBelanja').value = nilaiKonversiGlobal;
+                }
+            } catch(e) { console.log("Gagal memuat aturan konversi database."); }
+        }
+
+        // Pendaftaran Pelanggan Baru
+        async function prosesRegistrasi() {
+            const nama = document.getElementById('regNama').value.trim();
+            const hp = document.getElementById('regHP').value.trim();
+            const alamat = document.getElementById('regAlamat').value.trim();
+
+            if(!nama || !hp) { alert("Nama dan No HP wajib diisi!"); return; }
+
+            try {
+                const { data, error } = await supabaseClient.from('pelanggan').insert([{ nama, no_hp: hp, alamat }]).select();
+                if (error) { alert("Gagal Simpan: " + error.message); }
+                else {
+                    alert("🎉 Pendaftaran '" + data[0].nama + "' sukses! Silakan login masuk.");
+                    document.getElementById('regNama').value = ''; document.getElementById('regHP').value = ''; document.getElementById('regAlamat').value = '';
+                    switchMenu('login');
+                }
+            } catch (err) { alert("Error Sistem Registrasi: " + err.message); }
+        }
+
+        // Proses Login User & Admin
+        async function prosesLogin() {
+            const idInput = document.getElementById('loginId').value.trim();
+            const passInput = document.getElementById('loginPass').value.trim();
+            if(!idInput) { alert("Mohon isi ID Masuk!"); return; }
+
+            try {
+                if (currentRole === 'pelanggan') {
+                    let { data, error } = await supabaseClient.from('pelanggan').select('*').eq('no_hp', idInput).maybeSingle();
+                    if (data) {
+                        currentUserData = data;
+                        bukaDashboardPelanggan();
+                    } else { alert("Nomor HP tidak terdaftar!"); }
+                } else {
+                    let { data, error } = await supabaseClient.from('karyawan').select('*').eq('username', idInput).eq('password', passInput).maybeSingle();
+                    if (data) { bukaPanelAdmin(); } 
+                    else { alert("Username/Password Admin Salah!"); }
+                }
+            } catch (err) { alert("Gagal Memproses Otentikasi: " + err.message); }
+        }
+
+        // Logout Sifatnya Kembali Ke Halaman Login Awal
+        function logout() {
+            currentUserData = null;
+            document.getElementById('viewPelanggan').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
+            document.getElementById('viewAuth').classList.remove('hidden');
+        }
+
+        // Membuka Dashboard Sisi Pelanggan
+        async function bukaDashboardPelanggan() {
+            document.getElementById('viewAuth').classList.add('hidden');
+            document.getElementById('viewPelanggan').classList.remove('hidden');
+            
+            document.getElementById('userNama').innerText = currentUserData.nama;
+            document.getElementById('userHP').innerText = currentUserData.no_hp;
+            document.getElementById('userPoin').innerText = currentUserData.poin;
+            
+            renderHadiahPelanggan();
+        }
+
+        // Render Katalog Hadiah Sisi Pelanggan
+        async function renderHadiahPelanggan() {
+            const container = document.getElementById('listHadiahPelanggan');
+            container.innerHTML = "⏳ Memuat hadiah...";
+            
+            try {
+                let { data: listHadiah, error } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
+                if(listHadiah && listHadiah.length > 0) {
+                    container.innerHTML = "";
+                    listHadiah.forEach(barang => {
+                        const itemHtml = `
+                            <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs">
+                                <div>
+                                    <p class="font-bold text-slate-700">${barang.nama_barang}</p>
+                                    <p class="text-[10px] text-amber-600 font-mono font-bold">✨ ${barang.poin_butuh} Poin</p>
+                                </div>
+                                <button onclick="tukarPoinSistem(${barang.id}, ${barang.poin_butuh}, '${barang.nama_barang}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold shadow-sm">Tukar</button>
+                            </div>`;
+                        container.innerHTML += itemHtml;
+                    });
+                } else { container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>Belum ada daftar hadiah saat ini.</p>"; }
+            } catch(e) { container.innerHTML = "Gagal memuat hadiah."; }
+        }
+
+        // MODIFIKASI 1: Menyimpan log penukaran ke Supabase secara otomatis saat sukses tukar
+        async function tukarPoinSistem(barangId, poinButuh, namaBarang) {
+            if(currentUserData.poin < poinButuh) {
+                alert("Maaf, jumlah poin Anda saat ini tidak mencukupi untuk ditukar dengan " + namaBarang);
+                return;
+            }
+            if(!confirm("Apakah Anda yakin ingin menukarkan " + poinButuh + " poin dengan " + namaBarang + "?")) return;
+
+            const poinBaru = currentUserData.poin - poinButuh;
+            try {
+                // 1. Potong Poin Pelanggan
+                const { error: err1 } = await supabaseClient.from('pelanggan').update({ poin: poinBaru }).eq('id', currentUserData.id);
+                
+                // 2. Buat Catatan (Log) untuk Dashboard Admin
+                const { error: err2 } = await supabaseClient.from('log_penukaran').insert([
+                    { nama_pelanggan: currentUserData.nama, nama_barang: namaBarang, jumlah_poin: poinButuh }
+                ]);
+
+                if(err1 || err2) { 
+                    alert("Gagal melakukan transaksi penukaran: " + (err1?.message || err2?.message)); 
+                } else {
+                    alert("🎉 BERHASIL!\nPenukaran '" + namaBarang + "' sukses.\nPoin Anda terpotong " + poinButuh + " poin.");
+                    currentUserData.poin = poinBaru;
+                    bukaDashboardPelanggan(); 
+                }
+            } catch(err) { alert("Crash Penukaran Poin: " + err.message); }
+        }
+
+        // Membuka Panel Admin
+        function bukaPanelAdmin() {
+            document.getElementById('viewAuth').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.remove('hidden');
+            setAdminTab('input');
+            loadNilaiKonversiSistem();
+        }
+
+        // Navigasi Tab di Dalam Panel Admin
+        function setAdminTab(tab) {
+            document.getElementById('panelAdminInput').classList.add('hidden');
+            document.getElementById('panelAdminData').classList.add('hidden');
+            document.getElementById('panelAdminSetting').classList.add('hidden');
+            
+            document.getElementById('tabAdmInput').className = "py-1.5 text-center rounded-lg text-slate-600";
+            document.getElementById('tabAdmData').className = "py-1.5 text-center rounded-lg text-slate-600";
+            document.getElementById('tabAdmSetting').className = "py-1.5 text-center rounded-lg text-slate-600";
+
+            if(tab === 'input') {
+                document.getElementById('panelAdminInput').classList.remove('hidden');
+                document.getElementById('tabAdmInput').className = "py-1.5 text-center rounded-lg bg-white text-indigo-600 shadow-sm";
+            } else if(tab === 'data') {
+                document.getElementById('panelAdminData').classList.remove('hidden');
+                document.getElementById('tabAdmData').className = "py-1.5 text-center rounded-lg bg-white text-indigo-600 shadow-sm";
+                loadDataTokoAdmin();
+            } else {
+                document.getElementById('panelAdminSetting').classList.remove('hidden');
+                document.getElementById('tabAdmSetting').className = "py-1.5 text-center rounded-lg bg-white text-indigo-600 shadow-sm";
+                renderHadiahAdminView();
+            }
+        }
+
+        // Proses Menambah Poin Pelanggan Berdasarkan Nominal Belanja
+        async function prosesTambahPoin() {
+            const targetHP = document.getElementById('admInputHP').value.trim();
+            const nominalBelanja = parseFloat(document.getElementById('admInputBelanja').value);
+
+            if(!targetHP || isNaN(nominalBelanja) || nominalBelanja <= 0) {
+                alert("Mohon masukkan No HP Pelanggan dan Total Belanja yang valid!");
+                return;
+            }
+
+            try {
+                let { data: pelanggan, error } = await supabaseClient.from('pelanggan').select('*').eq('no_hp', targetHP).maybeSingle();
+                if(!pelanggan) {
+                    alert("Gagal: Pelanggan dengan Nomor HP '" + targetHP + "' tidak ditemukan!");
+                    return;
+                }
+
+                const tambahanPoin = Math.floor(nominalBelanja / nilaiKonversiGlobal);
+                if(tambahanPoin < 1) {
+                    alert("Info: Total belanja belum mencapai kelipatan minimal Rp " + nilaiKonversiGlobal.toLocaleString('id-ID') + " untuk mendapatkan 1 poin.");
+                    return;
+                }
+
+                const totalPoinBaru = pelanggan.poin + tambahanPoin;
+                const { error: updErr } = await supabaseClient.from('pelanggan').update({ poin: totalPoinBaru }).eq('id', pelanggan.id);
+                if(updErr) { alert("Gagal update poin: " + updErr.message); }
+                else {
+                    alert("✅ POIN BERHASIL DITAMBAHKAN!\nPelanggan: " + pelanggan.nama + "\nTambahan: +" + tambahanPoin + " Poin\nTotal Sisa Poin Sekarang: " + totalPoinBaru);
+                    document.getElementById('admInputBelanja').value = "";
+                }
+            } catch(e) { alert("Error sistem hitung poin: " + e.message); }
+        }
+
+        // MODIFIKASI 2: Mengambil log penukaran terbaru untuk ditampilkan di tab "Data Toko"
+        async function loadDataTokoAdmin() {
+            const tableBody = document.getElementById('tablePelangganBody');
+            const boxKaryawan = document.getElementById('listKaryawan');
+            const boxRiwayat = document.getElementById('listRiwayatPenukaran');
+            
+            tableBody.innerHTML = "<tr><td colspan='2' class='p-2 text-center text-slate-400'>Loading...</td></tr>";
+            if(boxRiwayat) boxRiwayat.innerHTML = "<p class='text-slate-400 text-center py-2'>Loading riwayat...</p>";
+            
+            try {
+                // Ambil Data Pelanggan
+                let { data: listP, error: err1 } = await supabaseClient.from('pelanggan').select('*').order('nama', { ascending: true });
+                if(listP) {
+                    cachePelanggan = listP; 
+                    tableBody.innerHTML = "";
+                    listP.forEach(p => {
+                        tableBody.innerHTML += `
+                            <tr class="border-b hover:bg-slate-100/50">
+                                <td class="p-2 font-medium text-slate-700">${p.nama}<br><span class="text-[10px] text-slate-400 font-mono">${p.no_hp}</span></td>
+                                <td class="p-2 text-right font-bold font-mono text-indigo-600">${p.poin}</td>
+                            </tr>`;
+                    });
+                }
+
+                // Ambil Data Karyawan
+                let { data: listK, error: err2 } = await supabaseClient.from('karyawan').select('nama, username');
+                if(listK) {
+                    boxKaryawan.innerHTML = "";
+                    listK.forEach(k => {
+                        boxKaryawan.innerHTML += `
+                            <div class="p-1 bg-white border border-slate-200 rounded shadow-sm text-slate-600 mb-1">
+                                👔 <b>${k.nama}</b> <span class="text-slate-400">(@${k.username})</span>
+                            </div>`;
+                    });
+                }
+
+                // Ambil Data Log Penukaran Terbaru (10 Transaksi Terakhir)
+                let { data: logs, error: err3 } = await supabaseClient.from('log_penukaran').select('*').order('created_at', { ascending: false }).limit(10);
+                if(logs && boxRiwayat) {
+                    boxRiwayat.innerHTML = "";
+                    if(logs.length === 0) {
+                        boxRiwayat.innerHTML = "<p class='text-slate-400 text-center py-2'>Belum ada riwayat penukaran.</p>";
+                    } else {
+                        logs.forEach(l => {
+                            const tgl = new Date(l.created_at).toLocaleDateString('id-ID');
+                            boxRiwayat.innerHTML += `
+                                <div class="border-b border-slate-200 py-1.5 last:border-0">
+                                    <span class="font-bold text-slate-700">${l.nama_pelanggan}</span> 
+                                    <span class="text-slate-500">tukar</span> <b class="text-emerald-600">${l.nama_barang}</b>
+                                    <div class="text-[10px] text-slate-400">${tgl} - Keluar ${l.jumlah_poin} Poin</div>
+                                </div>`;
+                        });
+                    }
+                }
+            } catch (e) { 
+                if(boxRiwayat) boxRiwayat.innerHTML = "<p class='text-rose-500 text-center py-2'>Gagal memuat riwayat.</p>";
+            }
+        }
+
+        // Export Data Member Ke File Excel
+        function exportPelangganExcel() {
+            if(cachePelanggan.length === 0) { alert("Tidak ada data pelanggan untuk diekspor!"); return; }
+            try {
+                var wb = XLSX.utils.book_new();
+                var barisData = [['Nama Pelanggan', 'Nomor Handphone', 'Alamat Domisili', 'Jumlah Sisa Poin', 'Tanggal Registrasi Member']];
+                
+                cachePelanggan.forEach(p => {
+                    barisData.push([p.nama, p.no_hp, p.alamat, p.poin, p.tanggal_daftar]);
+                });
+
+                var ws = XLSX.utils.aoa_to_sheet(barisData);
+                XLSX.utils.book_append_sheet(wb, ws, "Data Pelanggan");
+                XLSX.writeFile(wb, "Laporan_Pelanggan_RajaDiscount.xlsx");
+            } catch(err) { alert("Gagal mengolah file Excel: " + err.message); }
+        }
+
+        // Menyimpan Aturan Konversi Poin Rupiah Baru
+        async function simpanConfigPoin() {
+            const nominalBaru = parseInt(document.getElementById('cfgBelanja').value);
+            if(isNaN(nominalBaru) || nominalBaru <= 0) { alert("Masukkan nominal angka kelipatan belanja yang valid!"); return; }
+
+            try {
+                const { error } = await supabaseClient.from('pengaturan_poin').update({ konversi_belanja: nominalBaru }).eq('id', 1);
+                if(error) { alert("Gagal update aturan konversi: " + error.message); }
+                else {
+                    alert("Aturan berhasil diperbarui! Kelipatan Rp " + nominalBaru.toLocaleString('id-ID') + " = 1 Poin.");
+                    loadNilaiKonversiSistem();
+                }
+            } catch(e) { alert("Error sistem ubah aturan konversi."); }
+        }
+
+        // Tambah Barang Hadiah Secara Manual
+        async function tambahBarangHadiah() {
+            const namaBarang = document.getElementById('addNamaBarang').value.trim();
+            const poinButuh = parseInt(document.getElementById('addPoinButuh').value);
+
+            if(!namaBarang || isNaN(poinButuh) || poinButuh <= 0) { alert("Mohon isi nama barang dan poin dengan benar!"); return; }
+
+            try {
+                const { error } = await supabaseClient.from('barang_tukar').insert([{ nama_barang: namaBarang, poin_butuh: poinButuh }]);
+                if(error) { alert("Gagal menambah barang: " + error.message); }
+                else {
+                    alert("Barang '" + namaBarang + "' berhasil ditambahkan!");
+                    document.getElementById('addNamaBarang').value = ""; document.getElementById('addPoinButuh').value = "";
+                    renderHadiahAdminView();
+                }
+            } catch(e) { alert("Error database tambah hadiah."); }
+        }
+
+        // Render List Barang Hadiah di Sisi Admin Pengaturan
+        async function renderHadiahAdminView() {
+            const container = document.getElementById('listHadiahAdmin');
+            container.innerHTML = "Loading...";
+            try {
+                let { data: listHadiah, error } = await supabaseClient.from('barang_tukar').select('*').order('poin_butuh', { ascending: true });
+                
+                if(listHadiah) { 
+                    container.innerHTML = "";
+                    listHadiah.forEach(b => {
+                        container.innerHTML += `
+                            <div class="flex justify-between items-center bg-white p-1.5 border rounded-lg text-xs mb-1">
+                                <span><b>${b.nama_barang}</b> (${b.poin_butuh} Pts)</span>
+                                <button onclick="hapusBarangHadiah(${b.id}, '${b.nama_barang}')" class="text-rose-600 font-bold px-1 bg-rose-50 rounded">Hapus</button>
+                            </div>`;
+                    });
+                }
+            } catch(e) { container.innerHTML = "Gagal memuat daftar."; }
+        }
+
+        // Hapus Barang Hadiah
+        async function hapusBarangHadiah(id, nama) {
+            if(!confirm("Hapus '" + nama + "' dari daftar hadiah? Pelanggan tidak akan bisa menukarnya lagi.")) return;
+            try {
+                const { error } = await supabaseClient.from('barang_tukar').delete().eq('id', id);
+                if(error) { alert("Gagal menghapus: " + error.message); }
+                else { renderHadiahAdminView(); }
+            } catch(e) { alert("Crash Sistem Hapus."); }
+        }
+    </script>
+</body>
+</html>
