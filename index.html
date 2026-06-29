@@ -161,7 +161,7 @@
                     <span class="text-xs font-bold text-slate-600 block">📞 No. WA Admin Notifikasi</span>
                     <div>
                         <label class="text-[10px] text-slate-400 block font-bold uppercase mb-0.5">Nomor WhatsApp Admin</label>
-                        <input type="text" id="cfgWaAdmin" placeholder="Contoh: 628818670985" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="cfgWaAdmin" value="628818670985" placeholder="Contoh: 628818670985" class="w-full p-2 text-xs border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <span class="text-[9px] text-slate-400 block mt-0.5">Wajib kode negara di depan tanpa spasi/plus, contoh: <b>628818670985</b></span>
                     </div>
                     <button onclick="simpanWaAdmin()" class="w-full bg-indigo-600 text-white text-xs py-2 rounded-xl font-bold transition-all hover:bg-indigo-700">Simpan Nomor WA Admin</button>
@@ -548,6 +548,7 @@
             } catch(e) { alert("Error database saat mengubah aturan belanja."); }
         }
 
+        // FUNGSI UTAMA UNTUK UPDATE SQL NOMOR WA ADMIN
         async function simpanWaAdmin() {
             const waBaru = document.getElementById('cfgWaAdmin').value.trim();
             if(!waBaru) { 
@@ -555,13 +556,14 @@
                 return; 
             }
             try {
+                // Mengeksekusi perintah UPDATE SQL ke tabel 'pengaturan_wa' baris id=1
                 const { error } = await supabaseClient.from('pengaturan_wa').update({ 
                     wa_admin: waBaru 
                 }).eq('id', 1);
                 
                 if(!error) { 
-                    alert("🎉 BERHASIL!\nNomor WhatsApp Admin Notifikasi berhasil diperbarui."); 
-                    loadNilaiKonversiSistem(); 
+                    alert("🎉 BERHASIL!\nNomor WhatsApp Admin Notifikasi berhasil diperbarui di database."); 
+                    loadNilaiKonversiSistem(); // Memuat ulang variabel sistem global
                 } else {
                     alert("Gagal memperbarui database: " + error.message);
                 }
